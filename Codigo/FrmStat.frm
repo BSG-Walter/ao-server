@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "mscomctl.ocx"
 Begin VB.Form FrmStat 
    BackColor       =   &H00C0C0C0&
    BorderStyle     =   3  'Fixed Dialog
@@ -17,7 +17,7 @@ Begin VB.Form FrmStat
    ScaleWidth      =   375
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
-   Begin ComctlLib.ProgressBar ProgressBar1 
+   Begin MSComctlLib.ProgressBar ProgressBar1 
       Height          =   255
       Left            =   240
       TabIndex        =   1
@@ -25,7 +25,7 @@ Begin VB.Form FrmStat
       Width           =   5175
       _ExtentX        =   9128
       _ExtentY        =   450
-      _Version        =   327682
+      _Version        =   393216
       Appearance      =   1
    End
    Begin VB.Label Titu 
