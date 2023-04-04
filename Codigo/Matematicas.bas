@@ -48,7 +48,7 @@ Function Distancia(ByRef wp1 As WorldPos, ByRef wp2 As WorldPos) As Long
     '***************************************************
 
     'Encuentra la distancia entre dos WorldPos
-    Distancia = Abs(wp1.x - wp2.x) + Abs(wp1.Y - wp2.Y) + (Abs(wp1.Map - wp2.Map) * 100)
+    Distancia = Abs(wp1.X - wp2.X) + Abs(wp1.Y - wp2.Y) + (Abs(wp1.Map - wp2.Map) * 100)
 
 End Function
 
@@ -81,4 +81,22 @@ Public Function RandomNumber(ByVal LowerBound As Variant, _
 
     If RandomNumber > UpperBound Then RandomNumber = UpperBound
 
+End Function
+
+Function Max(ByVal a As Double, ByVal b As Double) As Double
+    If a > b Then
+        Max = a
+    Else
+        Max = b
+    End If
+    Exit Function
+End Function
+
+Function Min(ByVal a As Double, ByVal b As Double) As Double
+    If a < b Then
+        Min = a
+    Else
+        Min = b
+    End If
+    Exit Function
 End Function
