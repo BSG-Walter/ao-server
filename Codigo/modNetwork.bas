@@ -146,11 +146,27 @@ End Sub
 
 Private Sub OnServerRecv(ByVal Connection As Long, ByVal Message As Network.Reader)
 On Error GoTo OnServerRecv_Err:
+    Dim Slot As Integer
+    Slot = Mapping(Connection)
     
-    Dim UserRef As t_UserReference
-    UserRef = Mapping(Connection)
+    #If AntiExternos Then
+        'Notas de kojax:
+        'aprovecho la funcion de getdata y setdata de aurora para seguir usando el cifrado XOR
+        Dim Datos() As Byte
+        Call Message.GetData(Datos)
+        
+        If UserList(Slot).flags.UserLogged Then
+            Security.NAC_D_Byte Datos, UserList(Slot).Redundance
+        Else
+            Security.NAC_D_Byte Datos, 13
+        End If
+        
+        Call Message.SetData(Datos)
 
-    Call Protocol.HandleIncomingData(UserRef.ArrayIndex, Message)
+    #End If
+    
+
+    Call Protocol.HandleIncomingData(Slot, Message)
     
     Exit Sub
     
@@ -176,3 +192,15 @@ On Error GoTo Kick_ErrHandler:
     Call Server.Flush(Connection)
     Call Server.Kick(Connection, True)
     Exit Sub
+End Sub
+
+' Test the time since last call and update the time
+' log if there time betwen calls exced the limit
+Public Sub PerformTimeLimitCheck(ByRef timer As Long, ByRef TestText As String, Optional ByVal TimeLimit As Long = 1000)
+    Dim CurrTime As Long
+    CurrTime = GetTickCount()
+    If CurrTime - timer > TimeLimit Then
+        Call LogPerformance("Performance warning at: " & TestText & " elapsed time: " & CurrTime - timer)
+    End If
+    timer = GetTickCount()
+End Sub

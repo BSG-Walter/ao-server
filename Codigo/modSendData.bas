@@ -87,31 +87,14 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
             Exit Sub
         
         Case SendTarget.ToAdmins
-
+            
             For LoopC = 1 To LastUser
-
-                If UserList(LoopC).ConnID <> -1 Then
-                    If UserList(LoopC).flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios Or PlayerType.SemiDios Or PlayerType.Consejero) Then
-
-                        ' Denounces can be desactivated
-                        If IsDenounce Then
-                            
-                            If UserList(LoopC).flags.SendDenounces Then
-                                Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
-                            End If
-
-                        Else
-                            Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
-
-                        End If
-
+                If UserList(LoopC).ConnIDValida Then
+                    If UserList(LoopC).flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios Or PlayerType.SemiDios Or PlayerType.consejero) Then
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
-
                 End If
-
             Next LoopC
-
-            Exit Sub
         
         Case SendTarget.ToAll
 
@@ -120,7 +103,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If UserList(LoopC).ConnID <> -1 Then
                     
                     If UserList(LoopC).flags.UserLogged Then 'Esta logeado como usuario?
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -136,7 +119,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) And (LoopC <> sndIndex) Then
                     
                     If UserList(LoopC).flags.UserLogged Then 'Esta logeado como usuario?
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -159,7 +142,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
             While LoopC > 0
 
                 If (UserList(LoopC).ConnID <> -1) Then
-                    Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                    Call modNetwork.Send(LoopC, Writer)
                 End If
 
                 LoopC = modGuilds.m_Iterador_ProximoUserIndex(sndIndex)
@@ -196,7 +179,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
             While LoopC > 0
 
                 If (UserList(LoopC).ConnID <> -1) Then
-                    Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                    Call modNetwork.Send(LoopC, Writer)
                 End If
 
                 LoopC = modGuilds.m_Iterador_ProximoUserIndex(sndIndex)
@@ -207,7 +190,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
             While LoopC > 0
 
                 If (UserList(LoopC).ConnID <> -1) Then
-                    Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                    Call modNetwork.Send(LoopC, Writer)
                 End If
 
                 LoopC = modGuilds.Iterador_ProximoGM(sndIndex)
@@ -222,7 +205,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If UserList(LoopC).flags.Privilegios And PlayerType.RoyalCouncil Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -238,7 +221,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If UserList(LoopC).flags.Privilegios And PlayerType.ChaosCouncil Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -254,7 +237,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If UserList(LoopC).flags.Privilegios And PlayerType.RoleMaster Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -270,7 +253,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If Not criminal(LoopC) Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -286,7 +269,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If criminal(LoopC) Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -302,7 +285,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If UserList(LoopC).Faccion.ArmadaReal = 1 Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -318,7 +301,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If UserList(LoopC).Faccion.FuerzasCaos = 1 Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -334,7 +317,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If Not criminal(LoopC) Or (UserList(LoopC).flags.Privilegios And PlayerType.RoleMaster) <> 0 Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -350,7 +333,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If criminal(LoopC) Or (UserList(LoopC).flags.Privilegios And PlayerType.RoleMaster) <> 0 Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -366,7 +349,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If UserList(LoopC).Faccion.ArmadaReal = 1 Or (UserList(LoopC).flags.Privilegios And PlayerType.RoleMaster) <> 0 Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -382,7 +365,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If (UserList(LoopC).ConnID <> -1) Then
                     
                     If UserList(LoopC).Faccion.FuerzasCaos = 1 Or (UserList(LoopC).flags.Privilegios And PlayerType.RoleMaster) <> 0 Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -398,7 +381,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
                 If UserList(LoopC).ConnID <> -1 Then
                     
                     If UserList(LoopC).flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios) Then
-                        Call UserList(LoopC).outgoingData.WriteASCIIStringFixed(sndData)
+                        Call modNetwork.Send(LoopC, Writer)
                     End If
 
                 End If
@@ -423,7 +406,7 @@ Public Sub SendData(ByVal sndRoute As SendTarget, _
 
 End Sub
 
-Private Sub SendToUserArea(ByVal Userindex As Integer, ByVal sdData As String)
+Private Sub SendToUserArea(ByVal UserIndex As Integer, ByVal sdData As String)
 
     '**************************************************************
     'Author: Lucio N. Tourrilhes (DuNga)
@@ -434,16 +417,16 @@ Private Sub SendToUserArea(ByVal Userindex As Integer, ByVal sdData As String)
     Dim tempIndex As Integer
     Dim Map       As Integer
 
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
 
     If Not MapaValido(Map) Then Exit Sub
 
     For LoopC = 1 To ConnGroups(Map).Count()
         tempIndex = ConnGroups(Map).Item(LoopC)
 
-        If EstanMismoArea(Userindex, tempIndex) Then
+        If EstanMismoArea(UserIndex, tempIndex) Then
             If UserList(tempIndex).ConnIDValida Then
-                Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+                Call modNetwork.Send(tempIndex, Writer)
             End If
         End If
 
@@ -451,7 +434,7 @@ Private Sub SendToUserArea(ByVal Userindex As Integer, ByVal sdData As String)
 
 End Sub
 
-Private Sub SendToUserAreaButindex(ByVal Userindex As Integer, ByVal sdData As String)
+Private Sub SendToUserAreaButindex(ByVal UserIndex As Integer, ByVal sdData As String)
 
     '**************************************************************
     'Author: Lucio N. Tourrilhes (DuNga)
@@ -462,17 +445,17 @@ Private Sub SendToUserAreaButindex(ByVal Userindex As Integer, ByVal sdData As S
     Dim tempIndex As Integer
     Dim Map       As Integer
 
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
 
     If Not MapaValido(Map) Then Exit Sub
 
     For LoopC = 1 To ConnGroups(Map).Count()
         tempIndex = ConnGroups(Map).Item(LoopC)
 
-        If tempIndex <> Userindex Then
-            If EstanMismoArea(Userindex, tempIndex) Then
+        If tempIndex <> UserIndex Then
+            If EstanMismoArea(UserIndex, tempIndex) Then
                 If UserList(tempIndex).ConnIDValida Then
-                    Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+                    Call modNetwork.Send(tempIndex, Writer)
                 End If
             End If
         End If
@@ -481,7 +464,7 @@ Private Sub SendToUserAreaButindex(ByVal Userindex As Integer, ByVal sdData As S
 
 End Sub
 
-Private Sub SendToDeadUserArea(ByVal Userindex As Integer, ByVal sdData As String)
+Private Sub SendToDeadUserArea(ByVal UserIndex As Integer, ByVal sdData As String)
 
     '**************************************************************
     'Author: Juan Martin Sotuyo Dodero (Maraxus)
@@ -492,17 +475,17 @@ Private Sub SendToDeadUserArea(ByVal Userindex As Integer, ByVal sdData As Strin
     Dim tempIndex As Integer
     Dim Map       As Integer
 
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
     
     If Not MapaValido(Map) Then Exit Sub
     
     For LoopC = 1 To ConnGroups(Map).Count()
         tempIndex = ConnGroups(Map).Item(LoopC)
 
-        If EstanMismoArea(Userindex, tempIndex) Then
+        If EstanMismoArea(UserIndex, tempIndex) Then
             'Dead and admins read
-            If UserList(tempIndex).ConnIDValida = True And (UserList(tempIndex).flags.Muerto = 1 Or (UserList(tempIndex).flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios Or PlayerType.SemiDios Or PlayerType.Consejero)) <> 0) Then
-                Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+            If UserList(tempIndex).ConnIDValida = True And (UserList(tempIndex).flags.Muerto = 1 Or (UserList(tempIndex).flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios Or PlayerType.SemiDios Or PlayerType.consejero)) <> 0) Then
+                Call modNetwork.Send(tempIndex, Writer)
             End If
         End If
 
@@ -510,7 +493,7 @@ Private Sub SendToDeadUserArea(ByVal Userindex As Integer, ByVal sdData As Strin
 
 End Sub
 
-Private Sub SendToUserGuildArea(ByVal Userindex As Integer, ByVal sdData As String)
+Private Sub SendToUserGuildArea(ByVal UserIndex As Integer, ByVal sdData As String)
 
     '**************************************************************
     'Author: Juan Martin Sotuyo Dodero (Maraxus)
@@ -521,18 +504,18 @@ Private Sub SendToUserGuildArea(ByVal Userindex As Integer, ByVal sdData As Stri
     Dim tempIndex As Integer
     Dim Map       As Integer
 
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
 
     If Not MapaValido(Map) Then Exit Sub
 
-    If UserList(Userindex).GuildIndex = 0 Then Exit Sub
+    If UserList(UserIndex).GuildIndex = 0 Then Exit Sub
 
     For LoopC = 1 To ConnGroups(Map).Count()
         tempIndex = ConnGroups(Map).Item(LoopC)
         
-        If EstanMismoArea(Userindex, tempIndex) Then
-            If UserList(tempIndex).ConnIDValida And (UserList(tempIndex).GuildIndex = UserList(Userindex).GuildIndex Or ((UserList(tempIndex).flags.Privilegios And PlayerType.Dios) And (UserList(tempIndex).flags.Privilegios And PlayerType.RoleMaster) = 0)) Then
-                Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+        If EstanMismoArea(UserIndex, tempIndex) Then
+            If UserList(tempIndex).ConnIDValida And (UserList(tempIndex).GuildIndex = UserList(UserIndex).GuildIndex Or ((UserList(tempIndex).flags.Privilegios And PlayerType.Dios) And (UserList(tempIndex).flags.Privilegios And PlayerType.RoleMaster) = 0)) Then
+                Call modNetwork.Send(tempIndex, Writer)
             End If
         End If
 
@@ -540,7 +523,7 @@ Private Sub SendToUserGuildArea(ByVal Userindex As Integer, ByVal sdData As Stri
 
 End Sub
 
-Private Sub SendToUserPartyArea(ByVal Userindex As Integer, ByVal sdData As String)
+Private Sub SendToUserPartyArea(ByVal UserIndex As Integer, ByVal sdData As String)
 
     '**************************************************************
     'Author: Juan Martin Sotuyo Dodero (Maraxus)
@@ -551,18 +534,18 @@ Private Sub SendToUserPartyArea(ByVal Userindex As Integer, ByVal sdData As Stri
     Dim tempIndex As Integer
     Dim Map       As Integer
 
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
 
     If Not MapaValido(Map) Then Exit Sub
     
-    If UserList(Userindex).PartyIndex = 0 Then Exit Sub
+    If UserList(UserIndex).PartyIndex = 0 Then Exit Sub
     
     For LoopC = 1 To ConnGroups(Map).Count()
         tempIndex = ConnGroups(Map).Item(LoopC)
 
-        If EstanMismoArea(Userindex, tempIndex) Then
-            If UserList(tempIndex).ConnIDValida And UserList(tempIndex).PartyIndex = UserList(Userindex).PartyIndex Then
-                Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+        If EstanMismoArea(UserIndex, tempIndex) Then
+            If UserList(tempIndex).ConnIDValida And UserList(tempIndex).PartyIndex = UserList(UserIndex).PartyIndex Then
+                Call modNetwork.Send(tempIndex, Writer)
             End If
         End If
 
@@ -570,7 +553,7 @@ Private Sub SendToUserPartyArea(ByVal Userindex As Integer, ByVal sdData As Stri
 
 End Sub
 
-Private Sub SendToAdminsButConsejerosArea(ByVal Userindex As Integer, _
+Private Sub SendToAdminsButConsejerosArea(ByVal UserIndex As Integer, _
                                           ByVal sdData As String)
 
     '**************************************************************
@@ -582,17 +565,17 @@ Private Sub SendToAdminsButConsejerosArea(ByVal Userindex As Integer, _
     Dim tempIndex As Integer
     Dim Map       As Integer
 
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
 
     If Not MapaValido(Map) Then Exit Sub
 
     For LoopC = 1 To ConnGroups(Map).Count()
         tempIndex = ConnGroups(Map).Item(LoopC)
 
-        If EstanMismoArea(Userindex, tempIndex) Then
+        If EstanMismoArea(UserIndex, tempIndex) Then
             If UserList(tempIndex).ConnIDValida Then
                 If UserList(tempIndex).flags.Privilegios And (PlayerType.SemiDios Or PlayerType.Dios Or PlayerType.Admin) Then
-                    Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+                    Call modNetwork.Send(tempIndex, Writer)
                 End If
             End If
         End If
@@ -621,7 +604,7 @@ Private Sub SendToNpcArea(ByVal NpcIndex As Long, ByVal sdData As String)
 
         If EstanMismoAreaNPC(NpcIndex, tempIndex) Then
             If UserList(tempIndex).ConnIDValida Then
-                Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+                Call modNetwork.Send(tempIndex, Writer)
             End If
         End If
 
@@ -649,7 +632,7 @@ Public Sub SendToAreaByPos(ByVal Map As Integer, _
 
         If EstanMismoAreaPos(tempIndex, X, Y) Then
             If UserList(tempIndex).ConnIDValida Then
-                Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+                Call modNetwork.Send(tempIndex, Writer)
             End If
         End If
 
@@ -674,14 +657,14 @@ Public Sub SendToMap(ByVal Map As Integer, ByVal sdData As String)
         tempIndex = ConnGroups(Map).Item(LoopC)
         
         If UserList(tempIndex).ConnIDValida Then
-            Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+            Call modNetwork.Send(tempIndex, Writer)
         End If
 
     Next LoopC
 
 End Sub
 
-Public Sub SendToMapButIndex(ByVal Userindex As Integer, ByVal sdData As String)
+Public Sub SendToMapButIndex(ByVal UserIndex As Integer, ByVal sdData As String)
 
     '**************************************************************
     'Author: Juan Martin Sotuyo Dodero (Maraxus)
@@ -694,22 +677,22 @@ Public Sub SendToMapButIndex(ByVal Userindex As Integer, ByVal sdData As String)
 
     Dim tempIndex As Integer
     
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
     
     If Not MapaValido(Map) Then Exit Sub
 
     For LoopC = 1 To ConnGroups(Map).Count()
         tempIndex = ConnGroups(Map).Item(LoopC)
         
-        If tempIndex <> Userindex And UserList(tempIndex).ConnIDValida Then
-            Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+        If tempIndex <> UserIndex And UserList(tempIndex).ConnIDValida Then
+            Call modNetwork.Send(tempIndex, Writer)
         End If
 
     Next LoopC
 
 End Sub
 
-Private Sub SendToGMsAreaButRmsOrCounselors(ByVal Userindex As Integer, _
+Private Sub SendToGMsAreaButRmsOrCounselors(ByVal UserIndex As Integer, _
                                             ByVal sdData As String)
 
     '**************************************************************
@@ -722,7 +705,7 @@ Private Sub SendToGMsAreaButRmsOrCounselors(ByVal Userindex As Integer, _
     Dim tempIndex As Integer
     Dim Map       As Integer
 
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
 
     If Not MapaValido(Map) Then Exit Sub
 
@@ -731,11 +714,11 @@ Private Sub SendToGMsAreaButRmsOrCounselors(ByVal Userindex As Integer, _
         
         With UserList(tempIndex)
 
-            If EstanMismoArea(Userindex, tempIndex) Then
+            If EstanMismoArea(UserIndex, tempIndex) Then
                 If .ConnIDValida Then
                     ' Exclusivo para dioses, admins y gms
-                    If (.flags.Privilegios And Not PlayerType.User And Not PlayerType.Consejero And Not PlayerType.RoleMaster) = .flags.Privilegios Then
-                        Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+                    If (.flags.Privilegios And Not PlayerType.User And Not PlayerType.consejero And Not PlayerType.RoleMaster) = .flags.Privilegios Then
+                        Call modNetwork.Send(tempIndex, Writer)
                     End If
                 End If
             End If
@@ -746,7 +729,7 @@ Private Sub SendToGMsAreaButRmsOrCounselors(ByVal Userindex As Integer, _
 
 End Sub
 
-Private Sub SendToUsersAreaButGMs(ByVal Userindex As Integer, ByVal sdData As String)
+Private Sub SendToUsersAreaButGMs(ByVal UserIndex As Integer, ByVal sdData As String)
 
     '**************************************************************
     'Author: Torres Patricio(Pato)
@@ -757,17 +740,17 @@ Private Sub SendToUsersAreaButGMs(ByVal Userindex As Integer, ByVal sdData As St
     Dim tempIndex As Integer
     Dim Map       As Integer
 
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
 
     If Not MapaValido(Map) Then Exit Sub
 
     For LoopC = 1 To ConnGroups(Map).Count()
         tempIndex = ConnGroups(Map).Item(LoopC)
 
-        If EstanMismoArea(Userindex, tempIndex) Then
+        If EstanMismoArea(UserIndex, tempIndex) Then
             If UserList(tempIndex).ConnIDValida Then
                 If UserList(tempIndex).flags.Privilegios And PlayerType.User Then
-                    Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+                    Call modNetwork.Send(tempIndex, Writer)
                 End If
             End If
         End If
@@ -776,7 +759,7 @@ Private Sub SendToUsersAreaButGMs(ByVal Userindex As Integer, ByVal sdData As St
 
 End Sub
 
-Private Sub SendToUsersAndRmsAndCounselorsAreaButGMs(ByVal Userindex As Integer, _
+Private Sub SendToUsersAndRmsAndCounselorsAreaButGMs(ByVal UserIndex As Integer, _
                                                      ByVal sdData As String)
 
     '**************************************************************
@@ -788,17 +771,17 @@ Private Sub SendToUsersAndRmsAndCounselorsAreaButGMs(ByVal Userindex As Integer,
     Dim tempIndex As Integer
     Dim Map       As Integer
 
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
 
     If Not MapaValido(Map) Then Exit Sub
 
     For LoopC = 1 To ConnGroups(Map).Count()
         tempIndex = ConnGroups(Map).Item(LoopC)
 
-        If EstanMismoArea(Userindex, tempIndex) Then
+        If EstanMismoArea(UserIndex, tempIndex) Then
             If UserList(tempIndex).ConnIDValida Then
-                If UserList(tempIndex).flags.Privilegios And (PlayerType.User Or PlayerType.Consejero Or PlayerType.RoleMaster) Then
-                    Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(sdData)
+                If UserList(tempIndex).flags.Privilegios And (PlayerType.User Or PlayerType.consejero Or PlayerType.RoleMaster) Then
+                    Call modNetwork.Send(tempIndex, Writer)
                 End If
             End If
         End If
@@ -807,7 +790,7 @@ Private Sub SendToUsersAndRmsAndCounselorsAreaButGMs(ByVal Userindex As Integer,
 
 End Sub
 
-Public Sub AlertarFaccionarios(ByVal Userindex As Integer)
+Public Sub AlertarFaccionarios(ByVal UserIndex As Integer)
 
     '**************************************************************
     'Author: ZaMa
@@ -820,13 +803,13 @@ Public Sub AlertarFaccionarios(ByVal Userindex As Integer)
     Dim Font      As FontTypeNames
     Dim tempData  As String
     
-    If esCaos(Userindex) Then
+    If esCaos(UserIndex) Then
         Font = FontTypeNames.FONTTYPE_CONSEJOCAOS
     Else
         Font = FontTypeNames.FONTTYPE_CONSEJO
     End If
     
-    Map = UserList(Userindex).Pos.Map
+    Map = UserList(UserIndex).Pos.Map
     
     If Not MapaValido(Map) Then Exit Sub
 
@@ -835,14 +818,14 @@ Public Sub AlertarFaccionarios(ByVal Userindex As Integer)
         
         If UserList(tempIndex).ConnIDValida Then
             
-            If tempIndex <> Userindex Then
+            If tempIndex <> UserIndex Then
 
                 ' Solo se envia a los de la misma faccion
-                If SameFaccion(Userindex, tempIndex) Then
+                If SameFaccion(UserIndex, tempIndex) Then
                 
-                    tempData = PrepareMessageConsoleMsg("Escuchas el llamado de un companero que proviene del " & GetDireccion(Userindex, tempIndex), Font)
+                    tempData = PrepareMessageConsoleMsg("Escuchas el llamado de un companero que proviene del " & GetDireccion(UserIndex, tempIndex), Font)
                     
-                    Call UserList(tempIndex).outgoingData.WriteASCIIStringFixed(tempData)
+                    Call modNetwork.Send(tempIndex, Writer)
 
                 End If
 
