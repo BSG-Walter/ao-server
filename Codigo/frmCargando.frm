@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.ocx"
+Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.2#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmCargando 
    BackColor       =   &H00C0C0C0&
    BorderStyle     =   0  'None
@@ -18,17 +18,16 @@ Begin VB.Form frmCargando
    ScaleWidth      =   439
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin ComctlLib.ProgressBar cargar 
+   Begin MSComctlLib.ProgressBar cargar 
       Height          =   255
       Left            =   120
-      TabIndex        =   2
+      TabIndex        =   3
       Top             =   2880
       Width           =   3855
       _ExtentX        =   6800
       _ExtentY        =   450
-      _Version        =   327682
+      _Version        =   393216
       Appearance      =   1
-      Min             =   1e-4
    End
    Begin VB.PictureBox Picture1 
       BorderStyle     =   0  'None
@@ -87,7 +86,7 @@ Begin VB.Form frmCargando
       Height          =   195
       Index           =   2
       Left            =   6000
-      TabIndex        =   3
+      TabIndex        =   2
       Top             =   2880
       Width           =   375
    End
