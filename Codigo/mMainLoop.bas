@@ -32,34 +32,11 @@ errhand:
 
 End Sub
 
-Public Sub PacketResend()
-
-    '***************************************************
-    'Autor: Juan Martin Sotuyo Dodero (Maraxus)
-    'Last Modification: 04/01/07
-    'Attempts to resend to the user all data that may be enqueued.
-    '***************************************************
-    On Error GoTo ErrHandler:
-
-    Dim i As Long
-    For i = 1 To LastUser
-        If UserList(i).ConnIDValida Then Call FlushBuffer(i)
-    Next i
-
-    Exit Sub
-
-ErrHandler:
-    Call LogError("Error en packetResend - Error: " & Err.Number & " - Desc: " & Err.description)
-
-    Resume Next
-
-End Sub
-
 Public Sub TimerEnviarDatosServer()
 
     On Error GoTo ErrorHandler
 
-    Call ApiEndpointSendServerDataToApiToShowOnlineUsers()
+    Call ApiEndpointSendServerDataToApiToShowOnlineUsers
 
 ErrorHandler:
     If Err.Number <> 0 Then
@@ -398,7 +375,6 @@ Public Sub PasarSegundo()
                     If .Counters.Salir <= 0 Then
                         Call WriteConsoleMsg(i, "Gracias por jugar Argentum Online", FontTypeNames.FONTTYPE_INFO)
                         Call WriteDisconnect(i)
-                        Call FlushBuffer(i)
                         Call CloseSocket(i)
                     End If
 

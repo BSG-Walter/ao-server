@@ -840,8 +840,6 @@ Sub CloseSocket(ByVal UserIndex As Integer)
     '***************************************************
     On Error GoTo errHandler
     
-    Call FlushBuffer(UserIndex)
-    
     With UserList(UserIndex)
         
         If .ConnIDValida Then Call CloseSocketSL(UserIndex)
@@ -904,7 +902,7 @@ End Sub
 '[Alejo-21-5]: Cierra un socket sin limpiar el slot
 Sub CloseSocketSL(ByVal UserIndex As Integer)
         
-    On Error GoTo CloseSocketSL_Err
+    On Error Resume Next
 
     If UserList(UserIndex).ConnIDValida Then
         Call modNetwork.Kick(UserList(UserIndex).ConnID)
@@ -913,7 +911,7 @@ Sub CloseSocketSL(ByVal UserIndex As Integer)
     End If
         
     Exit Sub
-End Function
+End Sub
 
 Function EstaPCarea(index As Integer, Index2 As Integer) As Boolean
     '***************************************************
@@ -1107,7 +1105,7 @@ Sub ConnectUser(ByVal UserIndex As Integer, _
         
             Call LogGM(Name, "Se conecto con ip:" & .IP)
         ElseIf EsConsejero(Name) Then
-            .flags.Privilegios = .flags.Privilegios Or PlayerType.Consejero
+            .flags.Privilegios = .flags.Privilegios Or PlayerType.consejero
             Call LogGM(Name, "Se conecto con ip:" & .IP)
         Else
             .flags.Privilegios = .flags.Privilegios Or PlayerType.User
@@ -1122,7 +1120,7 @@ Sub ConnectUser(ByVal UserIndex As Integer, _
         End If
     
         If ServerSoloGMs > 0 Then
-            If (.flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios Or PlayerType.SemiDios Or PlayerType.Consejero)) = 0 Then
+            If (.flags.Privilegios And (PlayerType.Admin Or PlayerType.Dios Or PlayerType.SemiDios Or PlayerType.consejero)) = 0 Then
                 Call WriteErrorMsg(UserIndex, "Servidor restringido a administradores. Por favor reintente en unos momentos.")
                 Call CloseSocket(UserIndex)
                 Exit Sub
@@ -2061,31 +2059,6 @@ Sub CloseUser(ByVal UserIndex As Integer)
 
 errHandler:
     Call LogError("Error en CloseUser. Numero " & Err.Number & " Descripcion: " & Err.description)
-
-End Sub
-
-Sub ReloadSokcet()
-    '***************************************************
-    'Author: Unknown
-    'Last Modification: -
-    '
-    '***************************************************
-
-    On Error GoTo errHandler
-
-    Call LogApiSock("ReloadSokcet() " & NumUsers & " " & LastUser & " " & MaxUsers)
-    
-    If NumUsers <= 0 Then
-        Call WSApiReiniciarSockets
-    Else
-        'Call apiclosesocket(SockListen)
-        'SockListen = ListenForConnect(Puerto, hWndMsg, vbNullString)
-    End If
-
-    Exit Sub
-    
-errHandler:
-    Call LogError("Error en CheckSocketState " & Err.Number & ": " & Err.description)
 
 End Sub
 

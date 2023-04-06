@@ -135,12 +135,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Sub cboPjs_Change()
-    Call ActualizaPjInfo
+    MsgBox "Deprecated"
 
 End Sub
 
 Private Sub cboPjs_Click()
-    Call ActualizaPjInfo
+    MsgBox "Deprecated"
 
 End Sub
 
@@ -184,22 +184,5 @@ End Sub
 
 Private Sub Command3_Click()
     Call EcharPjsNoPrivilegiados
-
-End Sub
-
-Private Sub ActualizaPjInfo()
-
-    Dim tIndex As Long
-    
-    tIndex = NameIndex(cboPjs.Text)
-
-    If tIndex > 0 Then
-
-        With UserList(tIndex)
-            Text1.Text = .outgoingData.Length & " elementos en cola." & vbCrLf
-
-        End With
-
-    End If
 
 End Sub

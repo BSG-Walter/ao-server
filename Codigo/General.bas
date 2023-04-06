@@ -344,7 +344,7 @@ Sub Main()
     Call ResetUsersConnections
 
     ' Sockets
-    Call SocketConfig
+    'Call SocketConfig
     
     ' Timers
     Call InitMainTimers
@@ -605,44 +605,12 @@ Private Sub InitMainTimers()
     With frmMain
         .AutoSave.Enabled = True
         .GameTimer.Enabled = True
-        .PacketResend.Enabled = True
         .TIMER_AI.Enabled = True
         .Auditoria.Enabled = True
         .TimerEnviarDatosServer.Enabled = True
     End With
     
     LastGameTick = GetTickCount
-    
-End Sub
-
-Private Sub SocketConfig()
-
-
-    '*****************************************************************
-    'Author: ZaMa
-    'Last Modify Date: 15/03/2011
-    'Sets socket config.
-    '*****************************************************************
-    On Error Resume Next
-
-    Call SecurityIp.InitIpTables(1000)
-    
-    If LastSockListen >= 0 Then
-        Call apiclosesocket(LastSockListen) 'Cierra el socket de escucha
-    End If
-
-    Call IniciaWsApi(frmMain.hWnd)
-    
-    SockListen = ListenForConnect(Puerto, hWndMsg, vbNullString)
-
-    If SockListen <> -1 Then
-        ' Guarda el socket escuchando
-        Call WriteVar(IniPath & "Server.ini", "INIT", "LastSockListen", SockListen)
-    Else
-        Call MsgBox("Ha ocurrido un error al iniciar el socket del Servidor.", vbCritical + vbOKOnly)
-    End If
-    
-    frmMain.txtStatus.Text = Date & " " & Time & " - Escuchando conexiones entrantes ..."
     
 End Sub
 
@@ -747,10 +715,10 @@ Sub Restart()
 
 
     'Cierra el socket de escucha
-    If SockListen >= 0 Then Call apiclosesocket(SockListen)
+    'If SockListen >= 0 Then Call apiclosesocket(SockListen)
     
     'Inicia el socket de escucha
-    SockListen = ListenForConnect(Puerto, hWndMsg, "")
+    'SockListen = ListenForConnect(Puerto, hWndMsg, "")
 
     For LoopC = 1 To MaxUsers
         Call CloseSocket(LoopC)

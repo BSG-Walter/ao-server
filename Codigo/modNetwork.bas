@@ -24,6 +24,7 @@ Public Sub Listen(ByVal Limit As Long, ByVal Address As String, ByVal Service As
     Call Server.Attach(AddressOf OnServerConnect, AddressOf OnServerClose, AddressOf OnServerSend, AddressOf OnServerRecv)
     
     Call Server.Listen(Limit, Address, Service)
+    
 End Sub
 
 Public Sub Disconnect()
@@ -70,46 +71,41 @@ On Error GoTo OnServerConnect_Err:
     End If
     
     If Connection <= MaxUsers Then
-    
+        Dim FreeUser As Long
+        FreeUser = NextOpenUser()
+        
+        Dim i As Integer
         'Busca si esta banneada la ip
         For i = 1 To BanIps.Count
     
             If BanIps.Item(i) = Address Then
-                Call WriteErrorMsg(NewIndex, "Su IP se encuentra bloqueada en este servidor.")
+                Call WriteErrorMsg(FreeUser, "Su IP se encuentra bloqueada en este servidor.")
                 Exit Sub
             End If
     
         Next i
-        
-        Dim FreeUser As Long
-        FreeUser = NextOpenUser()
-        If UserList(FreeUser).InUse Then
-           Call LogError("Trying to use an user slot marked as in use! slot: " & FreeUser)
-           FreeUser = NextOpenUser()
-        End If
     
         UserList(FreeUser).ConnIDValida = True
         UserList(FreeUser).IP = Address
         UserList(FreeUser).ConnID = Connection
-        UserList(FreeUser).Counters.OnConnectTimestamp = GetTickCount()
         
         Mapping(Connection) = FreeUser
         
         If FreeUser >= LastUser Then LastUser = FreeUser
-        
-        Call WriteConnected(Mapping(Connection).ArrayIndex)
     Else
         Call Kick(Connection, "El server se encuentra lleno en este momento. Disculpe las molestias ocasionadas.")
     End If
     
     Exit Sub
+OnServerConnect_Err:
+    Call Kick(Connection)
 End Sub
 
 Private Sub OnServerClose(ByVal Connection As Long)
 
     On Error GoTo OnServerClose_Err:
     
-    Dim UserRef As t_UserReference
+    Dim UserRef As Integer
 
     UserRef = Mapping(Connection)
 
@@ -130,8 +126,8 @@ Private Sub OnServerClose(ByVal Connection As Long)
     Exit Sub
     
 OnServerClose_Err:
-    Call ForcedClose(UserRef.ArrayIndex, Connection)
-    Call TraceError(Err.Number, Err.description, "modNetwork.OnServerClose", Erl)
+    Call CloseSocket(UserRef)
+    Debug.Print (Err.description & " modNetwork.OnServerClose")
 End Sub
 
 Private Sub OnServerSend(ByVal Connection As Long, ByVal Message As Network.Reader)
@@ -172,17 +168,18 @@ On Error GoTo OnServerRecv_Err:
     
 OnServerRecv_Err:
     Call Kick(Connection)
-    Call TraceError(Err.Number, Err.description, "modNetwork.OnServerRecv", Erl)
+    Debug.Print (Err.description & "modNetwork.OnServerRecv")
 End Sub
 
 Public Sub Kick(ByVal Connection As Long, Optional ByVal Message As String = vbNullString)
 On Error GoTo Kick_ErrHandler:
 
     If (Message <> vbNullString) Then
-        Dim UserRef As t_UserReference
+        Dim UserRef As Integer
         UserRef = Mapping(Connection)
         If UserRef > 0 Then
-            Call Protocol_Writes.WriteErrorMsg(UserRef, Message)
+            Call WriteErrorMsg(UserRef, Message)
+            Call Send(UserRef, Writer)
             If UserList(UserRef).flags.UserLogged Then
                 Call Cerrar_Usuario(UserRef)
             End If
@@ -192,6 +189,8 @@ On Error GoTo Kick_ErrHandler:
     Call Server.Flush(Connection)
     Call Server.Kick(Connection, True)
     Exit Sub
+Kick_ErrHandler:
+    Debug.Print (Err.description & " modNetwork.Kick")
 End Sub
 
 ' Test the time since last call and update the time
@@ -200,7 +199,9 @@ Public Sub PerformTimeLimitCheck(ByRef timer As Long, ByRef TestText As String, 
     Dim CurrTime As Long
     CurrTime = GetTickCount()
     If CurrTime - timer > TimeLimit Then
-        Call LogPerformance("Performance warning at: " & TestText & " elapsed time: " & CurrTime - timer)
+        Debug.Print ("Performance warning at: " & TestText & " elapsed time: " & CurrTime - timer)
     End If
     timer = GetTickCount()
 End Sub
+
+

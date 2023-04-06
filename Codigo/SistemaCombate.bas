@@ -208,18 +208,18 @@ Public Function UserImpactoNpc(ByVal UserIndex As Integer, _
             
             'Tiene municion?
             'si es un caza oculto no manda la animacion de flecha o cuchillas
-            If Not (UserList(Userindex).Clase = eClass.Hunter And UserList(Userindex).flags.Oculto = 1) Then
-                If MunicionObjIndex <> 0  Then
-                    Call SendData(SendTarget.ToPCArea, UserIndex, PrepareMessageProyectil(UserIndex, _ 
-                                                                                            UserList(UserIndex).Char.CharIndex, _ 
-                                                                                            Npclist(NpcIndex).Char.CharIndex, _ 
+            If Not (UserList(UserIndex).Clase = eClass.Hunter And UserList(UserIndex).flags.Oculto = 1) Then
+                If MunicionObjIndex <> 0 Then
+                    Call SendData(SendTarget.ToPCArea, UserIndex, PrepareMessageProyectil(UserIndex, _
+                                                                                            UserList(UserIndex).Char.CharIndex, _
+                                                                                            Npclist(NpcIndex).Char.CharIndex, _
                                                                                             ObjData(UserList(UserIndex).Invent.MunicionEqpObjIndex).GrhIndex))
                 End If
 
-                If ObjData(UserList(Userindex).Invent.WeaponEqpObjIndex).Acuchilla = 1 Then
-                    Call SendData(SendTarget.ToPCArea, UserIndex, PrepareMessageProyectil(UserIndex, _ 
-                                                                            UserList(UserIndex).Char.CharIndex, _ 
-                                                                            Npclist(NpcIndex).Char.CharIndex, _ 
+                If ObjData(UserList(UserIndex).Invent.WeaponEqpObjIndex).Acuchilla = 1 Then
+                    Call SendData(SendTarget.ToPCArea, UserIndex, PrepareMessageProyectil(UserIndex, _
+                                                                            UserList(UserIndex).Char.CharIndex, _
+                                                                            Npclist(NpcIndex).Char.CharIndex, _
                                                                             ObjData(UserList(UserIndex).Invent.WeaponEqpObjIndex).GrhIndex))
                 End If
             End If
@@ -1098,7 +1098,7 @@ Public Function UsuarioAtacaNpc(ByVal UserIndex As Integer, _
     '06/04/2020: FrankoH298 - Si un usuario ataca a un npc lo desmonta.
     '***************************************************
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     If Not PuedeAtacarNPC(UserIndex, NpcIndex) Then Exit Function
     
@@ -1142,7 +1142,7 @@ Public Function UsuarioAtacaNpc(ByVal UserIndex As Integer, _
     
     Exit Function
     
-ErrHandler:
+errHandler:
 
     Dim UserName As String
     
@@ -1177,12 +1177,12 @@ Public Sub UsuarioAtaca(ByVal UserIndex As Integer)
 
     End If
     
-    With UserList(Userindex)
+    With UserList(UserIndex)
     
         #If ProteccionGM = 1 Then
             ' WyroX: A pedido de la gente, desactivo que los GMs puedan atacar
             If (.flags.Privilegios And PlayerType.User) = 0 Then
-                Call WriteConsoleMsg(Userindex, "Los GMs no pueden atacar.", FONTTYPE_SERVER)
+                Call WriteConsoleMsg(UserIndex, "Los GMs no pueden atacar.", FONTTYPE_SERVER)
                 Exit Sub
             End If
         #End If
@@ -1264,7 +1264,7 @@ Public Function UsuarioImpacto(ByVal AtacanteIndex As Integer, _
     '12/07/2020: Lorwik - Envio animacion de la flecha viajando
     '***************************************************
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim ProbRechazo            As Long
 
@@ -1305,8 +1305,8 @@ Public Function UsuarioImpacto(ByVal AtacanteIndex As Integer, _
                 'si es un caza oculto no manda la animacion de flecha
                 If Not (UserList(AtacanteIndex).Clase = eClass.Hunter And UserList(AtacanteIndex).flags.Oculto = 1) Then
                     Call SendData(SendTarget.ToPCArea, AtacanteIndex, PrepareMessageProyectil(AtacanteIndex, UserList(AtacanteIndex).Char.CharIndex, .Char.CharIndex, ObjData(UserList(AtacanteIndex).Invent.MunicionEqpObjIndex).GrhIndex))
-                End if
-            End if
+                End If
+            End If
         Else
             UserPoderEvasionEscudo = 0
 
@@ -1382,7 +1382,7 @@ Public Function UsuarioImpacto(ByVal AtacanteIndex As Integer, _
     
     Exit Function
     
-ErrHandler:
+errHandler:
 
     Dim AtacanteNick As String
 
@@ -1405,7 +1405,7 @@ Public Function UsuarioAtacaUsuario(ByVal AtacanteIndex As Integer, _
     '06/04/2020: FrankoH298 - Si un usuario ataca a un npc lo desmonta.
     '***************************************************
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     If Not PuedeAtacar(AtacanteIndex, VictimaIndex) Then Exit Function
     
@@ -1449,7 +1449,7 @@ Public Function UsuarioAtacaUsuario(ByVal AtacanteIndex As Integer, _
 
             ' Invisible admins doesn't make sound to other clients except itself
             If .flags.AdminInvisible = 1 Then
-                Call UserList(AtacanteIndex).outgoingData.WriteASCIIStringFixed(PrepareMessagePlayWave(SND_SWING, .Pos.X, .Pos.Y))
+                Call modNetwork.Send(AtacanteIndex, Writer)
             Else
                 Call SendData(SendTarget.ToPCArea, AtacanteIndex, PrepareMessagePlayWave(SND_SWING, .Pos.X, .Pos.Y))
 
@@ -1473,7 +1473,7 @@ Public Function UsuarioAtacaUsuario(ByVal AtacanteIndex As Integer, _
     
     Exit Function
     
-ErrHandler:
+errHandler:
     Call LogError("Error en UsuarioAtacaUsuario. Error " & Err.Number & " : " & Err.description)
 
 End Function
@@ -1487,7 +1487,7 @@ Public Sub UserDanoUser(ByVal AtacanteIndex As Integer, ByVal VictimaIndex As In
     '18/09/2010: ZaMa - Ahora se cosidera la defensa de los barcos siempre.
     '***************************************************
     
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim dano          As Long
 
@@ -1701,7 +1701,7 @@ Public Sub UserDanoUser(ByVal AtacanteIndex As Integer, ByVal VictimaIndex As In
     
     Exit Sub
     
-ErrHandler:
+errHandler:
 
     Dim AtacanteNick As String
 
@@ -1831,7 +1831,7 @@ Public Function PuedeAtacar(ByVal AttackerIndex As Integer, _
     '24/02/2009: ZaMa - Los usuarios pueden atacarse entre si.
     '02/04/2010: ZaMa - Los armadas no pueden atacar nunca a los ciudas, salvo que esten atacables.
     '***************************************************
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     'MUY importante el orden de estos "IF"...
     
@@ -2008,7 +2008,7 @@ Public Function PuedeAtacar(ByVal AttackerIndex As Integer, _
     PuedeAtacar = True
     Exit Function
 
-ErrHandler:
+errHandler:
     Call LogError("Error en PuedeAtacar. Error " & Err.Number & " : " & Err.description)
 
 End Function
@@ -2030,7 +2030,7 @@ Public Function PuedeAtacarNPC(ByVal AttackerIndex As Integer, _
     '04/07/2010: ZaMa - Ahora no se puede apropiar del dragon de dd.
     '***************************************************
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     With Npclist(NpcIndex)
     
@@ -2042,7 +2042,7 @@ Public Function PuedeAtacarNPC(ByVal AttackerIndex As Integer, _
         End If
         
         'Sos consejero?
-        If UserList(AttackerIndex).flags.Privilegios And PlayerType.Consejero Then
+        If UserList(AttackerIndex).flags.Privilegios And PlayerType.consejero Then
             'No pueden atacar NPC los Consejeros.
             Exit Function
 
@@ -2491,7 +2491,7 @@ Public Function PuedeAtacarNPC(ByVal AttackerIndex As Integer, _
         
     Exit Function
         
-ErrHandler:
+errHandler:
     
     Dim AtckName  As String
 
@@ -2593,7 +2593,7 @@ Public Function TriggerZonaPelea(ByVal Origen As Integer, _
 
     'TODO: Pero que rebuscado!!
     'Nigo:  Te lo redisene, pero no te borro el TODO para que lo revises.
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim tOrg As eTrigger
 
@@ -2616,7 +2616,7 @@ Public Function TriggerZonaPelea(ByVal Origen As Integer, _
     End If
 
     Exit Function
-ErrHandler:
+errHandler:
     TriggerZonaPelea = TRIGGER6_AUSENTE
     LogError ("Error en TriggerZonaPelea - " & Err.description)
 
@@ -2665,7 +2665,7 @@ Public Sub LanzarProyectil(ByVal UserIndex As Integer, ByVal X As Byte, ByVal Y 
     'Last Modification: 10/07/2010
     'Throws an arrow or knive to target user/npc.
     '***************************************************
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim MunicionSlot    As Byte
 
@@ -2831,7 +2831,7 @@ Public Sub LanzarProyectil(ByVal UserIndex As Integer, ByVal X As Byte, ByVal Y 
     
     Exit Sub
 
-ErrHandler:
+errHandler:
 
     Dim UserName As String
 
