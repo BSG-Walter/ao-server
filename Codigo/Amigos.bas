@@ -1,11 +1,11 @@
 Attribute VB_Name = "Amigos"
 Option Explicit
 
-Public Sub ResetAmigos(ByVal Userindex As Integer)
+Public Sub ResetAmigos(ByVal UserIndex As Integer)
 
 Dim i As Integer
 
-With UserList(Userindex)
+With UserList(UserIndex)
 
     For i = 1 To MAXAMIGOS
         .Amigos(i).Nombre = vbNullString
@@ -19,14 +19,14 @@ End With
 
 End Sub
 
-Public Function NoTieneEspacioAmigos(ByVal Userindex As Integer) As Boolean
+Public Function NoTieneEspacioAmigos(ByVal UserIndex As Integer) As Boolean
 
 Dim i     As Long
 Dim Count As Byte
 
 For i = 1 To MAXAMIGOS
 
-    If LenB(UserList(Userindex).Amigos(i).Nombre) > 0 Then
+    If LenB(UserList(UserIndex).Amigos(i).Nombre) > 0 Then
         Count = Count + 1
     End If
 
@@ -38,13 +38,13 @@ End If
 
 End Function
 
-Public Function BuscarSlotAmigoVacio(ByVal Userindex As Integer) As Byte
+Public Function BuscarSlotAmigoVacio(ByVal UserIndex As Integer) As Byte
 
 Dim i As Long
 
 For i = 1 To MAXAMIGOS
 
-    If LenB(UserList(Userindex).Amigos(i).Nombre) = 0 Then
+    If LenB(UserList(UserIndex).Amigos(i).Nombre) = 0 Then
         BuscarSlotAmigoVacio = i
         Exit Function
     End If
@@ -53,13 +53,13 @@ Next i
 
 End Function
 
-Public Function BuscarSlotAmigoName(ByVal Userindex As Integer, _
+Public Function BuscarSlotAmigoName(ByVal UserIndex As Integer, _
                                 ByVal Nombre As String) As Boolean
 Dim i As Long
 
 For i = 1 To MAXAMIGOS
 
-    If UCase$(UserList(Userindex).Amigos(i).Nombre) = UCase$(Nombre) Then
+    If UCase$(UserList(UserIndex).Amigos(i).Nombre) = UCase$(Nombre) Then
         BuscarSlotAmigoName = True
         Exit Function
     End If
@@ -68,13 +68,13 @@ Next i
 
 End Function
 
-Public Function BuscarSlotAmigoNameSlot(ByVal Userindex As Integer, _
+Public Function BuscarSlotAmigoNameSlot(ByVal UserIndex As Integer, _
                                     ByVal Nombre As String) As Byte
 Dim i As Long
 
 For i = 1 To MAXAMIGOS
 
-    If UCase$(UserList(Userindex).Amigos(i).Nombre) = UCase$(Nombre) Then
+    If UCase$(UserList(UserIndex).Amigos(i).Nombre) = UCase$(Nombre) Then
         BuscarSlotAmigoNameSlot = i
         Exit Function
     End If
@@ -110,18 +110,18 @@ End If
 
 End Sub
 
-Public Function AgregarAmigo(ByVal Userindex As Integer, _
+Public Function AgregarAmigo(ByVal UserIndex As Integer, _
                                  ByVal Otro As Integer, _
                                  ByRef razon As String) As Boolean
 
-With UserList(Userindex)
+With UserList(UserIndex)
 
-    If Otro = 0 Or Userindex = 0 Then
+    If Otro = 0 Or UserIndex = 0 Then
         razon = "Usuario Desconectado"
         AgregarAmigo = False
         Exit Function
 
-    ElseIf Userindex = Otro Then
+    ElseIf UserIndex = Otro Then
         razon = "Usuario Invalido"
         AgregarAmigo = False
         Exit Function
@@ -131,12 +131,12 @@ With UserList(Userindex)
         AgregarAmigo = False
         Exit Function
 
-    ElseIf EsGm(Userindex) = True Then
+    ElseIf EsGm(UserIndex) = True Then
         razon = "Los Game Masters no pueden agregar a usuarios como amigos."
         AgregarAmigo = False
         Exit Function
 
-    ElseIf NoTieneEspacioAmigos(Userindex) = True Then
+    ElseIf NoTieneEspacioAmigos(UserIndex) = True Then
         razon = "No tienes mas espacio para poder agregar amigos."
         AgregarAmigo = False
         Exit Function
@@ -146,7 +146,7 @@ With UserList(Userindex)
         AgregarAmigo = False
         Exit Function
 
-    ElseIf BuscarSlotAmigoName(Userindex, UserList(Otro).Name) = True Then
+    ElseIf BuscarSlotAmigoName(UserIndex, UserList(Otro).Name) = True Then
         razon = "Tu y " & UserList(Otro).Name & " ya son amigos."
         AgregarAmigo = False
         Exit Function
@@ -159,22 +159,22 @@ End With
 
 End Function
 
-Public Sub ActualizarSlotAmigo(ByVal Userindex As Integer, _
+Public Sub ActualizarSlotAmigo(ByVal UserIndex As Integer, _
                            ByVal Slot As Byte, _
                            Optional ByVal Todo As Boolean = False)
 Dim i As Long
 
-With UserList(Userindex)
+With UserList(UserIndex)
 
     If Todo Then
 
         For i = 1 To MAXAMIGOS
-            Call WriteCargarListaDeAmigos(Userindex, i)
+            Call WriteCargarListaDeAmigos(UserIndex, i)
         Next i
 
     Else
 
-        Call WriteCargarListaDeAmigos(Userindex, Slot)
+        Call WriteCargarListaDeAmigos(UserIndex, Slot)
 
     End If
 
@@ -182,13 +182,13 @@ End With
 
 End Sub
 
-Public Function ObtenerIndexLibre(ByVal Userindex As Integer) As Integer
+Public Function ObtenerIndexLibre(ByVal UserIndex As Integer) As Integer
 
 Dim i As Long
 
 For i = 1 To MAXAMIGOS
 
-    If UserList(Userindex).Amigos(i).index <= 0 Then
+    If UserList(UserIndex).Amigos(i).index <= 0 Then
         ObtenerIndexLibre = i
         Exit Function
     End If
@@ -197,13 +197,13 @@ Next i
 
 End Function
 
-Public Function ObtenerIndexUsuado(ByVal Userindex As Integer, _
+Public Function ObtenerIndexUsuado(ByVal UserIndex As Integer, _
                                ByVal Otro As Integer) As Integer
 Dim i As Long
 
 For i = 1 To MAXAMIGOS
 
-    If UserList(Userindex).Amigos(i).index = Otro Then
+    If UserList(UserIndex).Amigos(i).index = Otro Then
         ObtenerIndexUsuado = i
         Exit Function
     End If
@@ -212,11 +212,11 @@ Next i
 
 End Function
 
-Public Sub ObtenerIndexAmigos(ByVal Userindex As Integer, ByVal Desconectar As Boolean)
+Public Sub ObtenerIndexAmigos(ByVal UserIndex As Integer, ByVal Desconectar As Boolean)
 Dim i    As Long
 Dim Slot As Byte
 
-With UserList(Userindex)
+With UserList(UserIndex)
 
     If Desconectar = False Then
 
@@ -224,10 +224,10 @@ With UserList(Userindex)
 
             If LenB(UserList(i).Name) > 0 Then
 
-                If BuscarSlotAmigoName(Userindex, UserList(i).Name) Then
+                If BuscarSlotAmigoName(UserIndex, UserList(i).Name) Then
 
                     'Lo encontro y agregamos el index
-                    Slot = ObtenerIndexLibre(Userindex)
+                    Slot = ObtenerIndexLibre(UserIndex)
 
                     'Por las dudas
                     If Slot > 0 Then .Amigos(Slot).index = i
@@ -239,7 +239,7 @@ With UserList(Userindex)
 
                         If Slot > 0 Then
 
-                            UserList(i).Amigos(Slot).index = Userindex
+                            UserList(i).Amigos(Slot).index = UserIndex
 
                             'Informamos al otro de nuestra presencia
                             Call WriteConsoleMsg(i, "Amigos> " & .Name & " se ha conectado", FontTypeNames.FONTTYPE_CONSEJO)
@@ -264,7 +264,7 @@ With UserList(Userindex)
                 Call WriteConsoleMsg(.Amigos(i).index, "Amigos> " & .Name & " se ha desconectado", FontTypeNames.FONTTYPE_CONSEJO)
 
                 'Actualizamos la lista de index de los amigos
-                Slot = ObtenerIndexUsuado(.Amigos(i).index, Userindex)
+                Slot = ObtenerIndexUsuado(.Amigos(i).index, UserIndex)
 
                 If Slot > 0 Then UserList(.Amigos(i).index).Amigos(Slot).index = 0
 
@@ -278,45 +278,45 @@ End With
 
 End Sub
 
-Public Sub HandleMsgAmigo(ByVal Userindex As Integer)
+Public Sub HandleMsgAmigo(ByVal UserIndex As Integer)
 
-If UserList(Userindex).incomingData.Length < 3 Then
-    Call Err.Raise(UserList(Userindex).incomingData.NotEnoughDataErrCode)
+If UserList(UserIndex).incomingData.Length < 3 Then
+    Call Err.Raise(UserList(UserIndex).incomingData.NotEnoughDataErrCode)
     Exit Sub
 End If
 
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
-With UserList(Userindex)
+With UserList(UserIndex)
 
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim buffer As clsByteQueue: Set buffer = New clsByteQueue
-    Call buffer.CopyBuffer(.incomingData)
+    Dim Buffer As clsAuroraReader: Set Buffer = New clsAuroraReader
+    Call Buffer.CopyBuffer(.incomingData)
 
     'Remove packet ID
-    Call buffer.ReadByte
+    Call Buffer.ReadByte
 
     Dim Mensaje As String
     Dim i       As Long
 
-    Mensaje = buffer.ReadASCIIString()
+    Mensaje = Buffer.ReadASCIIString()
 
     'If we got here then packet is complete, copy data back to original queue
-    Call .incomingData.CopyBuffer(buffer)
+    Call .incomingData.CopyBuffer(Buffer)
 
     For i = 1 To MAXAMIGOS
 
-        If .Amigos(i).index > 0 And .Amigos(i).index <> Userindex Then
+        If .Amigos(i).index > 0 And .Amigos(i).index <> UserIndex Then
             Call WriteConsoleMsg(.Amigos(i).index, "FMSG[" & .Name & "]: " & Mensaje, FontTypeNames.FONTTYPE_GM)
         End If
 
     Next i
 
-    Call WriteConsoleMsg(Userindex, "FMSG[" & .Name & "]: " & Mensaje, FontTypeNames.FONTTYPE_GM)
+    Call WriteConsoleMsg(UserIndex, "FMSG[" & .Name & "]: " & Mensaje, FontTypeNames.FONTTYPE_GM)
 
 End With
 
-ErrHandler:
+errHandler:
 
 Dim Error As Long
     Error = Err.Number
@@ -324,14 +324,14 @@ Dim Error As Long
 On Error GoTo 0
 
 'Destroy auxiliar buffer
-Set buffer = Nothing
+Set Buffer = Nothing
 
 If Error <> 0 Then Call Err.Raise(Error)
 End Sub
 
-Public Sub HandleOnAmigo(ByVal Userindex As Integer)
+Public Sub HandleOnAmigo(ByVal UserIndex As Integer)
 
-With UserList(Userindex)
+With UserList(UserIndex)
 
     'Remove packet ID
     Call .incomingData.ReadByte
@@ -347,32 +347,32 @@ With UserList(Userindex)
     Next i
 
     If LenB(list) > 0 Then
-        Call WriteConsoleMsg(Userindex, "Onlines: " & list, FontTypeNames.FONTTYPE_CONSEJO)
+        Call WriteConsoleMsg(UserIndex, "Onlines: " & list, FontTypeNames.FONTTYPE_CONSEJO)
     Else
-        Call WriteConsoleMsg(Userindex, "No tienes ningun amigo conectado.", FontTypeNames.FONTTYPE_GM)
+        Call WriteConsoleMsg(UserIndex, "No tienes ningun amigo conectado.", FontTypeNames.FONTTYPE_GM)
     End If
 
 End With
 
 End Sub
 
-Public Sub HandleAddAmigo(ByVal Userindex As Integer)
+Public Sub HandleAddAmigo(ByVal UserIndex As Integer)
 
-If UserList(Userindex).incomingData.Length < 3 Then
-    Call Err.Raise(UserList(Userindex).incomingData.NotEnoughDataErrCode)
+If UserList(UserIndex).incomingData.Length < 3 Then
+    Call Err.Raise(UserList(UserIndex).incomingData.NotEnoughDataErrCode)
     Exit Sub
 End If
 
-On Error GoTo ErrHandler
+On Error GoTo errHandler
 
-With UserList(Userindex)
+With UserList(UserIndex)
 
     'This packet contains strings, make a copy of the data to prevent losses if it's not complete yet...
-    Dim buffer As clsByteQueue: Set buffer = New clsByteQueue
-    Call buffer.CopyBuffer(.incomingData)
+    Dim Buffer As clsAuroraReader: Set Buffer = New clsAuroraReader
+    Call Buffer.CopyBuffer(.incomingData)
 
     'Remove packet ID
-    Call buffer.ReadByte
+    Call Buffer.ReadByte
 
     Dim UserName  As String
     Dim tUserName As String
@@ -381,41 +381,41 @@ With UserList(Userindex)
     Dim tUser     As Integer
     Dim Slot      As Byte
 
-    UserName = buffer.ReadASCIIString()
-    caso = buffer.ReadByte
+    UserName = Buffer.ReadASCIIString()
+    caso = Buffer.ReadByte
     tUser = NameIndex(UserName)
 
     'If we got here then packet is complete, copy data back to original queue
-    Call .incomingData.CopyBuffer(buffer)
+    Call .incomingData.CopyBuffer(Buffer)
 
     'Mandar solicitudad de amistad
     If caso = 1 Then
 
-        If AgregarAmigo(Userindex, tUser, razon) = True Then
-            Call WriteConsoleMsg(Userindex, "Se ha enviado una solicitud de amistad a " & UserList(tUser).Name, FontTypeNames.FONTTYPE_CONSEJO)
-            Call WriteConsoleMsg(tUser, UserList(Userindex).Name & " quiere ser tu amigo. Para aceptarlo usa el comando /FADD " & .Name, FontTypeNames.FONTTYPE_CONSEJO)
+        If AgregarAmigo(UserIndex, tUser, razon) = True Then
+            Call WriteConsoleMsg(UserIndex, "Se ha enviado una solicitud de amistad a " & UserList(tUser).Name, FontTypeNames.FONTTYPE_CONSEJO)
+            Call WriteConsoleMsg(tUser, UserList(UserIndex).Name & " quiere ser tu amigo. Para aceptarlo usa el comando /FADD " & .Name, FontTypeNames.FONTTYPE_CONSEJO)
             UserList(tUser).Quien = .Name
 
         Else
-            Call WriteConsoleMsg(Userindex, razon, FontTypeNames.FONTTYPE_CONSEJO)
+            Call WriteConsoleMsg(UserIndex, razon, FontTypeNames.FONTTYPE_CONSEJO)
 
         End If
         'Confirmar solicitudad de amistad
 
     ElseIf caso > 1 Then
 
-        If AgregarAmigo(Userindex, tUser, razon) = True Then
+        If AgregarAmigo(UserIndex, tUser, razon) = True Then
 
             If LenB(.Quien) >= 3 Then
 
                 If UCase$(.Quien) = UCase$(UserList(tUser).Name) Then
 
-                    Slot = BuscarSlotAmigoVacio(Userindex)
+                    Slot = BuscarSlotAmigoVacio(UserIndex)
 
                     .Amigos(Slot).Nombre = UserList(tUser).Name
                     .Amigos(Slot).Ignorado = 0
 
-                    Call ActualizarSlotAmigo(Userindex, Slot)
+                    Call ActualizarSlotAmigo(UserIndex, Slot)
 
                     Slot = BuscarSlotAmigoVacio(tUser)
 
@@ -424,11 +424,11 @@ With UserList(Userindex)
 
                     Call ActualizarSlotAmigo(tUser, Slot)
 
-                    Call WriteConsoleMsg(Userindex, UserList(tUser).Name & " agregado", FontTypeNames.FONTTYPE_DIOS)
+                    Call WriteConsoleMsg(UserIndex, UserList(tUser).Name & " agregado", FontTypeNames.FONTTYPE_DIOS)
 
                     Call WriteConsoleMsg(tUser, .Name & " agregado", FontTypeNames.FONTTYPE_DIOS)
 
-                    Slot = ObtenerIndexLibre(Userindex)
+                    Slot = ObtenerIndexLibre(UserIndex)
 
                     If Slot > 0 Then
                         .Amigos(Slot).index = tUser
@@ -437,20 +437,20 @@ With UserList(Userindex)
                     Slot = ObtenerIndexLibre(tUser)
 
                     If Slot > 0 Then
-                        UserList(tUser).Amigos(Slot).index = Userindex
+                        UserList(tUser).Amigos(Slot).index = UserIndex
                     End If
 
                     .Quien = vbNullString
 
                 Else
-                    Call WriteConsoleMsg(Userindex, "Solicitud de amistad invalida.", FontTypeNames.FONTTYPE_CONSEJO)
+                    Call WriteConsoleMsg(UserIndex, "Solicitud de amistad invalida.", FontTypeNames.FONTTYPE_CONSEJO)
 
                 End If
 
             End If
 
         Else
-            Call WriteConsoleMsg(Userindex, razon, FontTypeNames.FONTTYPE_CONSEJO)
+            Call WriteConsoleMsg(UserIndex, razon, FontTypeNames.FONTTYPE_CONSEJO)
 
         End If
 
@@ -458,7 +458,7 @@ With UserList(Userindex)
 
 End With
 
-ErrHandler:
+errHandler:
 
 Dim Error As Long
     Error = Err.Number
@@ -466,15 +466,15 @@ Dim Error As Long
 On Error GoTo 0
 
 'Destroy auxiliar buffer
-Set buffer = Nothing
+Set Buffer = Nothing
 
 If Error <> 0 Then Call Err.Raise(Error)
 
 End Sub
 
-Public Sub HandleDelAmigo(ByVal Userindex As Integer)
+Public Sub HandleDelAmigo(ByVal UserIndex As Integer)
 
-With UserList(Userindex)
+With UserList(UserIndex)
 
     'Remove packet ID
     Call .incomingData.ReadByte
@@ -493,12 +493,12 @@ With UserList(Userindex)
     tUser = NameIndex(.Amigos(Slot).Nombre)
     UserName = .Amigos(Slot).Nombre
 
-    Call WriteConsoleMsg(Userindex, .Amigos(Slot).Nombre & " ha sido borrado de la lista de amigos.", FontTypeNames.FONTTYPE_GMMSG)
+    Call WriteConsoleMsg(UserIndex, .Amigos(Slot).Nombre & " ha sido borrado de la lista de amigos.", FontTypeNames.FONTTYPE_GMMSG)
 
     'reseteamos el slot
     .Amigos(Slot).Nombre = vbNullString
     .Amigos(Slot).Ignorado = 0
-    Call ActualizarSlotAmigo(Userindex, Slot)
+    Call ActualizarSlotAmigo(UserIndex, Slot)
 
     If tUser > 0 Then
 
@@ -514,13 +514,13 @@ With UserList(Userindex)
 
             Call ActualizarSlotAmigo(tUser, Slot)
 
-            Slot = ObtenerIndexUsuado(Userindex, tUser)
+            Slot = ObtenerIndexUsuado(UserIndex, tUser)
 
             If Slot > 0 Then
                 .Amigos(Slot).index = 0
             End If
 
-            Slot = ObtenerIndexUsuado(tUser, Userindex)
+            Slot = ObtenerIndexUsuado(tUser, UserIndex)
 
             If Slot > 0 Then
                 UserList(tUser).Amigos(Slot).index = 0

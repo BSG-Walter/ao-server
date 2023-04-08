@@ -1645,7 +1645,7 @@ Public Type User
         UpTime As Long
     #End If
 
-    ip As String
+    IP As String
     
     ComUsu As tCOmercioUsuario
     
@@ -1661,8 +1661,8 @@ Public Type User
     AreasInfo As AreaInfo
     
     'Outgoing and incoming messages
-    outgoingData As clsByteQueue
-    incomingData As clsByteQueue
+    outgoingData As clsAuroraWriter
+    incomingData As clsAuroraReader
     
     CurrentInventorySlots As Byte
 
@@ -1859,7 +1859,7 @@ Public Type MapBlock
 
     Blocked As Byte
     Graphic(1 To 4) As Long
-    Userindex As Integer
+    UserIndex As Integer
     NpcIndex As Integer
     ObjInfo As obj
     TileExit As WorldPos
@@ -2112,7 +2112,7 @@ Public Declare Function GetPrivateProfileString _
                                                  ByVal lpKeyname As Any, _
                                                  ByVal lpdefault As String, _
                                                  ByVal lpreturnedstring As String, _
-                                                 ByVal nsize As Long, _
+                                                 ByVal nSize As Long, _
                                                  ByVal lpfilename As String) As Long
 
 Public Declare Sub ZeroMemory _

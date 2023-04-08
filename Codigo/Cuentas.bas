@@ -1,7 +1,7 @@
 Attribute VB_Name = "Cuentas"
 Option Explicit
 
-Sub LoadUserFromCharfile(ByVal Userindex As Integer)
+Sub LoadUserFromCharfile(ByVal UserIndex As Integer)
 
     '*************************************************
     'Author: Juan Andres Dalmasso (CHOTS)
@@ -12,18 +12,18 @@ Sub LoadUserFromCharfile(ByVal Userindex As Integer)
 
     Set Leer = New clsIniManager
 
-    Call Leer.Initialize(CharPath & UCase$(UserList(Userindex).Name) & ".chr")
+    Call Leer.Initialize(CharPath & UCase$(UserList(UserIndex).Name) & ".chr")
 
     'Cargamos los datos del personaje
-    Call LoadUserInit(Userindex, Leer)
+    Call LoadUserInit(UserIndex, Leer)
     
     'Cargamos las estadisticas del usuario
-    Call LoadUserStats(Userindex, Leer)
+    Call LoadUserStats(UserIndex, Leer)
     
     'Cargamos las estadisticas de las quests
-    Call LoadQuestStats(Userindex, Leer)
+    Call LoadQuestStats(UserIndex, Leer)
 
-    Call LoadUserReputacion(Userindex, Leer)
+    Call LoadUserReputacion(UserIndex, Leer)
 
     Set Leer = Nothing
 
@@ -81,7 +81,7 @@ Public Sub BorrarUsuarioCharfile(ByVal UserName As String)
                 Call WriteVar(AccountCharfile, "INIT", "CANTIDADPERSONAJES", NumberOfCharacters - 1)
 
                 'Por ultimo borramos el archivo.
-                Kill(CharPath & UCase$(UserName) & ".chr")
+                Kill (CharPath & UCase$(UserName) & ".chr")
                 
                 Exit Sub
             End If
@@ -129,7 +129,7 @@ Public Sub SaveBanCharfile(ByVal UserName As String, _
     UserName = UCase$(UserName)
     Call WriteVar(CharPath & UserName & ".chr", "FLAGS", "Ban", "1")
     Call WriteVar(CharPath & UserName & ".chr", "PENAS", "Cant", cantPenas + 1)
-    Call WriteVar(CharPath & UserName & ".chr", "PENAS", "P" & cantPenas + 1, BannedBy & ": BAN POR " & LCase$(Reason) & " " & Date & " " & time)
+    Call WriteVar(CharPath & UserName & ".chr", "PENAS", "P" & cantPenas + 1, BannedBy & ": BAN POR " & LCase$(Reason) & " " & Date & " " & Time)
 
 End Sub
 
@@ -183,13 +183,13 @@ Public Function PersonajeCantidadVotosCharfile(ByVal UserName As String) As Inte
 
 End Function
 
-Public Sub MarcarPjComoQueYaVotoCharfile(ByVal Userindex As Integer, _
+Public Sub MarcarPjComoQueYaVotoCharfile(ByVal UserIndex As Integer, _
                                          ByVal NumeroEncuesta As Integer)
     '***************************************************
     'Author: Juan Andres Dalmasso (CHOTS)
     'Last Modification: 19/09/2018
     '***************************************************
-    Call WriteVar(CharPath & UserList(Userindex).Name & ".chr", "CONSULTAS", "Voto", str(NumeroEncuesta))
+    Call WriteVar(CharPath & UserList(UserIndex).Name & ".chr", "CONSULTAS", "Voto", Str(NumeroEncuesta))
 
 End Sub
 
@@ -203,7 +203,7 @@ Public Function GetUserAmountOfPunishmentsCharfile(ByVal UserName As String) As 
 
 End Function
 
-Public Sub SendUserPunishmentsCharfile(ByVal Userindex As Integer, _
+Public Sub SendUserPunishmentsCharfile(ByVal UserIndex As Integer, _
                                        ByVal UserName As String, _
                                        ByVal Count As Integer)
 
@@ -213,7 +213,7 @@ Public Sub SendUserPunishmentsCharfile(ByVal Userindex As Integer, _
     '***************************************************
     While Count > 0
 
-        Call WriteConsoleMsg(Userindex, Count & " - " & GetVar(CharPath & UserName & ".chr", "PENAS", "P" & Count), FontTypeNames.FONTTYPE_INFO)
+        Call WriteConsoleMsg(UserIndex, Count & " - " & GetVar(CharPath & UserName & ".chr", "PENAS", "P" & Count), FontTypeNames.FONTTYPE_INFO)
         Count = Count - 1
     Wend
 
@@ -669,7 +669,7 @@ Sub SaveUserGuildAspirantCharfile(ByVal UserName As String, _
 
 End Sub
 
-Sub SendCharacterInfoCharfile(ByVal Userindex As Integer, ByVal UserName As String)
+Sub SendCharacterInfoCharfile(ByVal UserIndex As Integer, ByVal UserName As String)
 
     '***************************************************
     'Author: Juan Andres Dalmasso (CHOTS)
@@ -706,7 +706,7 @@ Sub SendCharacterInfoCharfile(ByVal Userindex As Integer, ByVal UserName As Stri
     With UserFile
         .Initialize (CharPath & UserName & ".chr")
     
-        Call Protocol.WriteCharacterInfo(Userindex, UserName, .GetValue("INIT", "Raza"), .GetValue("INIT", "Clase"), .GetValue("INIT", "Genero"), .GetValue("STATS", "ELV"), .GetValue("STATS", "GLD"), .GetValue("STATS", "Banco"), .GetValue("REP", "Promedio"), .GetValue("GUILD", "Pedidos"), gName, Miembro, .GetValue("FACCIONES", "EjercitoReal"), .GetValue("FACCIONES", "EjercitoCaos"), .GetValue("FACCIONES", "CiudMatados"), .GetValue("FACCIONES", "CrimMatados"))
+        Call Protocol.WriteCharacterInfo(UserIndex, UserName, .GetValue("INIT", "Raza"), .GetValue("INIT", "Clase"), .GetValue("INIT", "Genero"), .GetValue("STATS", "ELV"), .GetValue("STATS", "GLD"), .GetValue("STATS", "Banco"), .GetValue("REP", "Promedio"), .GetValue("GUILD", "Pedidos"), gName, Miembro, .GetValue("FACCIONES", "EjercitoReal"), .GetValue("FACCIONES", "EjercitoCaos"), .GetValue("FACCIONES", "CiudMatados"), .GetValue("FACCIONES", "CrimMatados"))
 
     End With
     
@@ -738,7 +738,7 @@ Public Sub SaveNewAccountCharfile(ByVal UserName As String, _
         Call .ChangeValue("INIT", "Password", Password)
         Call .ChangeValue("INIT", "Salt", Salt)
         Call .ChangeValue("INIT", "Hash", Hash)
-        Call .ChangeValue("INIT", "FechaCreado", Date & " " & time)
+        Call .ChangeValue("INIT", "FechaCreado", Date & " " & Time)
 
         Call .DumpFile(AccountFile)
 
@@ -823,7 +823,7 @@ Public Sub SaveUserToAccountCharfile(ByVal UserName As String, _
 
 End Sub
 
-Public Sub LoginAccountCharfile(ByVal Userindex As Integer, ByVal UserName As String)
+Public Sub LoginAccountCharfile(ByVal UserIndex As Integer, ByVal UserName As String)
 
     '***************************************************
     'Author: Juan Andres Dalmasso (CHOTS)
@@ -875,9 +875,9 @@ Public Sub LoginAccountCharfile(ByVal Userindex As Integer, ByVal UserName As St
     Set Account = Nothing
     Set CharFile = Nothing
 
-    Call WriteUserAccountLogged(Userindex, UserName, AccountHash, NumberOfCharacters, Characters)
+    Call WriteUserAccountLogged(UserIndex, UserName, AccountHash, NumberOfCharacters, Characters)
 
-    Call SaveLastIpsAccountCharfile(UserName, UserList(Userindex).ip)
+    Call SaveLastIpsAccountCharfile(UserName, UserList(UserIndex).IP)
 
     Exit Sub
 ErrorHandler:
@@ -919,7 +919,7 @@ Public Function GetUserAmountOfPunishments(ByVal UserName As String) As Integer
 
 End Function
 
-Public Sub SendUserPunishments(ByVal Userindex As Integer, _
+Public Sub SendUserPunishments(ByVal UserIndex As Integer, _
                                ByVal UserName As String, _
                                ByVal Count As Integer)
 
@@ -929,9 +929,9 @@ Public Sub SendUserPunishments(ByVal Userindex As Integer, _
     'Writes a console msg for each punishment
     '***************************************************
     If Not Database_Enabled Then
-        Call SendUserPunishmentsCharfile(Userindex, UserName, Count)
+        Call SendUserPunishmentsCharfile(UserIndex, UserName, Count)
     Else
-        Call SendUserPunishmentsDatabase(Userindex, UserName, Count)
+        Call SendUserPunishmentsDatabase(UserIndex, UserName)
 
     End If
 
@@ -1450,7 +1450,7 @@ Public Sub SaveLastIpsAccountCharfile(ByVal UserName As String, ByVal CurrentIp 
     'Copio y pego logica de SaveUserToCharfile
     'First time around?
     If Manager.GetValue("INIT", "LastIP1") = vbNullString Then
-        Call Manager.ChangeValue("INIT", "LastIP1", CurrentIp & " - " & Date & ":" & time)
+        Call Manager.ChangeValue("INIT", "LastIP1", CurrentIp & " - " & Date & ":" & Time)
         'Is it a different ip from last time?
     ElseIf CurrentIp <> Left$(Manager.GetValue("INIT", "LastIP1"), InStr(1, Manager.GetValue("INIT", "LastIP1"), " ") - 1) Then
 
@@ -1460,10 +1460,10 @@ Public Sub SaveLastIpsAccountCharfile(ByVal UserName As String, ByVal CurrentIp 
             Call Manager.ChangeValue("INIT", "LastIP" & i, Manager.GetValue("INIT", "LastIP" & CStr(i - 1)))
         Next i
 
-        Call Manager.ChangeValue("INIT", "LastIP1", CurrentIp & " - " & Date & ":" & time)
+        Call Manager.ChangeValue("INIT", "LastIP1", CurrentIp & " - " & Date & ":" & Time)
         'Same ip, just update the date
     Else
-        Call Manager.ChangeValue("INIT", "LastIP1", CurrentIp & " - " & Date & ":" & time)
+        Call Manager.ChangeValue("INIT", "LastIP1", CurrentIp & " - " & Date & ":" & Time)
 
     End If
 

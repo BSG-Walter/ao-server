@@ -367,7 +367,7 @@ Private Sub cmdLoadWorldBackup_Click()
     'Se asegura de que los sockets estan cerrados e ignora cualquier err
     On Error Resume Next
 
-    If frmMain.Visible Then frmMain.txtStatus.Text = "Reiniciando."
+    If frmMain.Visible Then frmMain.txtStatus.text = "Reiniciando."
     
     FrmStat.Show
     
@@ -378,7 +378,7 @@ Private Sub cmdLoadWorldBackup_Click()
     If FileExist(App.Path & "\logs\Resurrecciones.log", vbNormal) Then Kill App.Path & "\logs\Resurrecciones.log"
     If FileExist(App.Path & "\logs\Teleports.Log", vbNormal) Then Kill App.Path & "\logs\Teleports.Log"
 
-    Call apiclosesocket(SockListen)
+    Call modNetwork.Disconnect
 
     Dim LoopC As Integer
     For LoopC = 1 To MaxUsers
@@ -395,9 +395,9 @@ Private Sub cmdLoadWorldBackup_Click()
     Call CargarBackUp
     Call LoadOBJData
 
-    SockListen = ListenForConnect(Puerto, hWndMsg, vbNullString)
+    Call modNetwork.Connect
 
-    If frmMain.Visible Then frmMain.txtStatus.Text = Date & " " & time & " - Reiniciando Terminado. Escuchando conexiones entrantes ..."
+    If frmMain.Visible Then frmMain.txtStatus.text = Date & " " & Time & " - Reiniciando Terminado. Escuchando conexiones entrantes ..."
 End Sub
 
 Private Sub cmdPausarServidor_Click()
@@ -431,17 +431,17 @@ End Sub
 Private Sub cmdResetListen_Click()
 
     'Cierra el socket de escucha
-    If SockListen >= 0 Then Call apiclosesocket(SockListen)
+    Call modNetwork.Disconnect
     
     'Inicia el socket de escucha
-    SockListen = ListenForConnect(Puerto, hWndMsg, vbNullString)
+    Call modNetwork.Connect
 
 End Sub
 
 Private Sub cmdResetSockets_Click()
 
     If MsgBox("Esta seguro que desea reiniciar los sockets? Se cerraran todas las conexiones activas.", vbYesNo, "Reiniciar Sockets") = vbYes Then
-        Call WSApiReiniciarSockets
+        Call modNetwork.Disconnect
     End If
 
 End Sub
@@ -514,7 +514,7 @@ End Sub
 
 Private Sub cmdWorldBackup_Click()
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Me.MousePointer = 11
     FrmStat.Show
@@ -524,19 +524,19 @@ Private Sub cmdWorldBackup_Click()
     
     Exit Sub
 
-ErrHandler:
+errHandler:
     Call LogError("Error en WORLDSAVE")
 
 End Sub
 
 Private Sub cmdRecargarGuardiasPosOrig_Click()
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     ReSpawnOrigPosNpcs
     Exit Sub
 
-ErrHandler:
+errHandler:
     Call LogError("Error en cmdRecargarGuardiasPosOrig")
 
 End Sub
@@ -564,7 +564,7 @@ Private Sub listDats_Click()
     'Lo pongo para prevenir errores.
     If listDats.ListIndex < 0 Then Exit Sub
     
-    Select Case UCase$(listDats.Text)
+    Select Case UCase$(listDats.text)
         
         Case "APUESTAS.DAT"
             Call CargaApuestas

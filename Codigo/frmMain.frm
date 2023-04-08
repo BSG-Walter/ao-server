@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.ocx"
+Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.OCX"
 Begin VB.Form frmMain 
    BackColor       =   &H00FFC0C0&
    BorderStyle     =   3  'Fixed Dialog
@@ -818,10 +818,10 @@ Private Sub cmdSystray_Click()
 End Sub
 
 Private Sub Command1_Click()
-    Call SendData(SendTarget.ToAll, 0, PrepareMessageShowMessageBox(BroadMsg.Text))
+    Call SendData(SendTarget.ToAll, 0, PrepareMessageShowMessageBox(BroadMsg.text))
     ''''''''''''''''SOLO PARA EL TESTEO'''''''
     ''''''''''SE USA PARA COMUNICARSE CON EL SERVER'''''''''''
-    txtChat.Text = txtChat.Text & vbNewLine & "Servidor> " & BroadMsg.Text
+    txtChat.text = txtChat.text & vbNewLine & "Servidor> " & BroadMsg.text
 
 End Sub
 
@@ -837,10 +837,10 @@ Public Sub InitMain(ByVal f As Byte)
 End Sub
 
 Private Sub Command2_Click()
-    Call SendData(SendTarget.ToAll, 0, PrepareMessageConsoleMsg("Servidor> " & BroadMsg.Text, FontTypeNames.FONTTYPE_SERVER))
+    Call SendData(SendTarget.ToAll, 0, PrepareMessageConsoleMsg("Servidor> " & BroadMsg.text, FontTypeNames.FONTTYPE_SERVER))
     ''''''''''''''''SOLO PARA EL TESTEO'''''''
     ''''''''''SE USA PARA COMUNICARSE CON EL SERVER'''''''''''
-    txtChat.Text = txtChat.Text & vbNewLine & "Servidor> " & BroadMsg.Text
+    txtChat.text = txtChat.text & vbNewLine & "Servidor> " & BroadMsg.text
 
 End Sub
 
@@ -901,7 +901,7 @@ Private Sub Form_Unload(Cancel As Integer)
 
     Call QuitarIconoSystray
 
-    Call LimpiaWsApi
+    Call modNetwork.Disconnect
 
     Dim LoopC As Integer
     For LoopC = 1 To MaxUsers
@@ -911,7 +911,7 @@ Private Sub Form_Unload(Cancel As Integer)
     'Log
     Dim n As Integer: n = FreeFile
     Open App.Path & "\logs\Main.log" For Append Shared As #n
-        Print #n, Date & " " & time & " server cerrado."
+        Print #n, Date & " " & Time & " server cerrado."
     Close #n
 
     End
@@ -932,7 +932,7 @@ Private Sub lblIp_Click()
         lblIp.Caption = "(Click para revelar)"
     End If
     
-    If frmMain.Visible Then frmMain.txtStatus.Text = Date & " " & time & " | La ip y puerto fueron copiadas correctamente, pegalas donde quieras."
+    If frmMain.Visible Then frmMain.txtStatus.text = Date & " " & Time & " | La ip y puerto fueron copiadas correctamente, pegalas donde quieras."
 End Sub
 
 Private Sub mnusalir_Click()
@@ -1031,94 +1031,4 @@ End Sub
 
 Private Sub TimerEnviarDatosServer_Timer()
     Call mMainLoop.TimerEnviarDatosServer
-End Sub
-
-Public Sub WinsockThread_WndProc(ByVal hWnd As Long, ByVal Msg As Long, ByVal wParam As Long, ByVal lParam As Long, ReturnVal As Long, DefCall As Boolean)
-
-    On Error Resume Next
-
-    Dim Ret      As Long
-    Dim Tmp()    As Byte
-    Dim S        As Long
-    Dim e        As Long
-    Dim n        As Integer
-    Dim UltError As Long
-    
-    Select Case Msg
-
-        Case 1025
-            S = wParam
-            e = WSAGetSelectEvent(lParam)
-            
-            Select Case e
-
-                Case FD_ACCEPT
-                    If S = SockListen Then
-                        Call EventoSockAccept(S)
-                    End If
-
-                Case FD_READ
-                    n = BuscaSlotSock(S)
-
-                    If n < 0 And S <> SockListen Then
-                        Call WSApiCloseSocket(S)
-                        Exit Sub
-                    End If
-                    
-                    'create appropiate sized buffer
-                    ReDim Preserve Tmp(SIZE_RCVBUF - 1) As Byte
-                    
-                    Ret = recv(S, Tmp(0), SIZE_RCVBUF, 0)
-
-                    ' Comparo por = 0 ya que esto es cuando se cierra
-                    ' "gracefully". (mas abajo)
-                    If Ret < 0 Then
-                        UltError = Err.LastDllError
-
-                        If UltError = WSAEMSGSIZE Then
-                            Debug.Print "WSAEMSGSIZE"
-                            Ret = SIZE_RCVBUF
-                        
-                        Else
-                            Debug.Print "Error en Recv: " & GetWSAErrorString(UltError)
-                            Call LogApiSock("Error en Recv: N=" & n & " S=" & S & " Str=" & GetWSAErrorString(UltError))
-                            
-                            'no hay q llamar a CloseSocket() directamente,
-                            'ya q pueden abusar de algun error para
-                            'desconectarse sin los 10segs. CREEME.
-                            Call CloseSocketSL(n)
-                            Call Cerrar_Usuario(n)
-                            Exit Sub
-
-                        End If
-
-                    ElseIf Ret = 0 Then
-                        Call CloseSocketSL(n)
-                        Call Cerrar_Usuario(n)
-
-                    End If
-                    
-                    ReDim Preserve Tmp(Ret - 1) As Byte
-                    
-                    Call EventoSockRead(n, Tmp)
-                
-                Case FD_CLOSE
-                    n = BuscaSlotSock(S)
-
-                    If S <> SockListen Then Call apiclosesocket(S)
-                    
-                    If n > 0 Then
-                        Call BorraSlotSock(S)
-                        UserList(n).ConnID = -1
-                        UserList(n).ConnIDValida = False
-                        Call EventoSockClose(n)
-                    End If
-
-            End Select
-        
-        Case Else
-            DefCall = True
-
-    End Select
-
 End Sub
