@@ -166,11 +166,39 @@ Private Function CheckIfRunningLastVersion() As Boolean
     VersionNumberMaster = JsonObject.Item("tag_name")
     VersionNumberLocal = GetVar(App.Path & "\Server.ini", "INIT", "VersionTagRelease")
     
-    If VersionNumberMaster = VersionNumberLocal Then
+    If CompareVersions(VersionNumberLocal, VersionNumberMaster) >= 0 Then
         CheckIfRunningLastVersion = True
     Else
         CheckIfRunningLastVersion = False
-
     End If
 
+End Function
+
+Function CompareVersions(v1 As String, v2 As String) As Integer
+    Dim a1() As String
+    Dim a2() As String
+    Dim i As Integer
+    Dim n1 As Integer, n2 As Integer
+    
+    ' Normalizar (sacar la "v")
+    If Left$(v1, 1) = "v" Or Left$(v1, 1) = "V" Then v1 = mid$(v1, 2)
+    If Left$(v2, 1) = "v" Or Left$(v2, 1) = "V" Then v2 = mid$(v2, 2)
+    
+    a1 = Split(v1, ".")
+    a2 = Split(v2, ".")
+    
+    For i = 0 To 2
+        n1 = val(a1(i))
+        n2 = val(a2(i))
+        
+        If n1 > n2 Then
+            CompareVersions = 1
+            Exit Function
+        ElseIf n1 < n2 Then
+            CompareVersions = -1
+            Exit Function
+        End If
+    Next i
+    
+    CompareVersions = 0
 End Function
